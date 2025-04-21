@@ -15,6 +15,7 @@
 git clone https://github.com/piezzy/wa-chat-analyzer.git
 pip install -r wa_analyzer_backend/requirements.txt
 streamlit run wa_analyzer_streamlit/app.py
+```
 
 ## 📂 Usage  
 1. Export WhatsApp chat (`.txt`)  
