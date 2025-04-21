@@ -18,13 +18,11 @@ def allowed_file(filename):
 
 @app.route('/analyze', methods=['POST'])
 def analyze():
-    # Check if the post request has the file part
     if 'chat' not in request.files:
         return jsonify({'error': 'No file part'}), 400
         
     file = request.files['chat']
-    
-    # If user does not select file
+
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
         
@@ -32,26 +30,20 @@ def analyze():
         return jsonify({'error': 'Invalid file type'}), 400
 
     try:
-        # Secure filename and save temporarily
         filename = secure_filename(file.filename)
         filepath = os.path.join(UPLOAD_FOLDER, filename)
         file.save(filepath)
-        
-        # Read the file
+
         with open(filepath, 'r', encoding='utf-8') as f:
             data = f.read()
-        
-        # Get user from form data
+
         selected_user = request.form.get('user', 'Overall')
-        
-        # Process data
+
         df = preprocess(data)
         num_messages, num_words, media_count, links = fetch_stats(selected_user, df)
-        
-        # Clean up
+
         os.remove(filepath)
-        
-        # Prepare results
+
         result = {
             'status': 'success',
             'user': selected_user,
@@ -64,7 +56,6 @@ def analyze():
         return jsonify(result)
         
     except Exception as e:
-        # Clean up if file was saved
         if 'filepath' in locals() and os.path.exists(filepath):
             os.remove(filepath)
             
